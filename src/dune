@@ -1,0 +1,32 @@
+(executable
+ (name stubgen)
+ (modules Stubgen Test_bindings)
+ (public_name stubgen.exe)
+ (libraries ctypes ctypes.stubs))
+
+(executable
+ (name magic)
+ (public_name magic.exe)
+ (modules Test_stubgen Magic)
+ (libraries ctypes ctypes.stubs)
+ (foreign_stubs
+  (language c)
+  (names test_stubgen test)
+  (include_dirs
+   (lib ctypes))))
+
+(rule
+ (targets Test_stubgen.ml)
+ (deps ./stubgen.exe)
+ (action
+  (with-stdout-to
+   %{targets}
+   (run %{deps} -ml))))
+
+(rule
+ (targets test_stubgen.c)
+ (deps ./stubgen.exe)
+ (action
+  (with-stdout-to
+   %{targets}
+   (run %{deps} -c))))
