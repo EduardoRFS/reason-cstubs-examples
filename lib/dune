@@ -1,18 +1,23 @@
 (library
  (name lib)
- (modules Test_stubgen)
- (libraries ctypes ctypes.stubs)
+ (modules Test_stubgen Lib)
+ (libraries ctypes ctypes.stubs test_bindings)
  (foreign_stubs
   (language c)
   (names test_stubgen test)
   (include_dirs
    (lib ctypes))))
 
+(library
+ (name test_bindings)
+ (modules Test_bindings)
+ (libraries ctypes ctypes.stubs))
+
 (executable
  (name stubgen)
- (modules Stubgen Test_bindings)
+ (modules Stubgen)
  (public_name stubgen.exe)
- (libraries ctypes ctypes.stubs))
+ (libraries test_bindings ctypes ctypes.stubs))
 
 (rule
  (targets Test_stubgen.ml)
